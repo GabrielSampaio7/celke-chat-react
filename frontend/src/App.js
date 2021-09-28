@@ -1,6 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import socketIOClient from 'socket.io-client';
-import './App.css';
+
+import {
+  Container,
+  Conteudo,
+  Header,
+  Form,
+  Campo,
+  Label,
+  Input,
+  Select,
+  BtnAcessar,
+  HeaderChat,
+  ImgUsuario,
+  NomeUsuario,
+  ChatBox,
+  ConteudoChat,
+  MsgEnviada,
+  DetMsgEnviada,
+  TextoMsgEnviado,
+  MsgRecebida,
+  DetMsgRecebida,
+  TextoMsgRecebido,
+  EnviarMsg,
+  CampoMsg,
+  BtnEnviarMsg
+} from './styles/styles';
 
 let socket;
 
@@ -31,7 +56,7 @@ function App() {
   }
 
   const enviarMensagem = async () => {
-    console.log("Mensagem"+ mensagem);
+    console.log("Mensagem" + mensagem);
 
     const conteudoMensagem = {
       sala,
@@ -49,44 +74,68 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <h1> Chat </h1>
-      {!logado ? <>
-        <label>Nome: </label>
-        <input type="text" placeholder="Nome" name="nome" value={nome} onChange={(text) => { setNome(text.target.value) }} />
-        <br />
-        <br />
-
-        <label>Sala: </label>
-        <select name="sala" value={sala} onChange={texto => setSala(texto.target.value)}>
-          <option value="">Selecione</option>
-          <option value="1">Node.js</option>
-          <option value="2">React</option>
-          <option value="3">React Native</option>
-        </select>
-
-        <br />
-        <br />
-        <button onClick={conectarSala}>Acessar</button>
-      </>
+    <Container>
+      {!logado ?
+        <Conteudo>
+          <Header>Chat</Header>
+          <Form>
+            <Campo>
+              <Label>Nome: </Label>
+              <Input type="text" placeholder="Nome" name="nome" value={nome} onChange={(text) => { setNome(text.target.value) }} />
+            </Campo>
+            <Campo>
+              <Label>Sala: </Label>
+              <Select name="sala" value={sala} onChange={texto => setSala(texto.target.value)}>
+                <option value="">Selecione</option>
+                <option value="1">Node.js</option>
+                <option value="2">React</option>
+                <option value="3">React Native</option>
+              </Select>
+            </Campo>
+            <BtnAcessar onClick={conectarSala}>Acessar</BtnAcessar>
+          </Form>
+        </Conteudo>
         :
-        <>
+        <ConteudoChat>
+          <HeaderChat>
+            <ImgUsuario src="" alt={nome} />
+            <NomeUsuario>{nome}</NomeUsuario>
+          </HeaderChat>
+          <ChatBox>
+            {listaMensagem.map((msg, key) => {
+              return (
+                <div key={key}>
+                  {nome === msg.nome ?
 
-        {listaMensagem.map((msg, key) => {
-          return (
-            <div key={key}>
-              {msg.nome}: {msg.mensagem}
-            </div>
-          )
-        })}
+                    <MsgEnviada>
+                      <DetMsgEnviada>
+                        <TextoMsgEnviado>
+                          {msg.nome} : {msg.mensagem}
+                        </TextoMsgEnviado>
+                      </DetMsgEnviada>
+                    </MsgEnviada>
+                    :
+                    <MsgRecebida>
+                      <DetMsgRecebida>
+                        <TextoMsgRecebido>
+                          {msg.nome} : {msg.mensagem}
+                        </TextoMsgRecebido>
+                      </DetMsgRecebida>
+                    </MsgRecebida>
+                  }
+                </div>
+              )
+            })}
+          </ChatBox>
+          <EnviarMsg>
+            <CampoMsg type="text" name="mensagem" id="name" value={mensagem} placeholder="Mensagem" onChange={(texto) => { setMensagem(texto.target.value) }} />
 
-          <input type="text" name="mensagem" id="name" value={mensagem} placeholder="Mensagem" onChange={(texto) => {setMensagem(texto.target.value)}} />
+            <BtnEnviarMsg onClick={enviarMensagem}>Enviar</BtnEnviarMsg>
+          </EnviarMsg>
 
-          <button onClick={enviarMensagem}>Enviar Mensagem</button>
-
-        </>
+        </ConteudoChat>
       }
-    </div>
+    </Container>
   );
 }
 
