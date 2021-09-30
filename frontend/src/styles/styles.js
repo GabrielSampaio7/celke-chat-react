@@ -1,12 +1,12 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Container = styled.section`
     background: #fff;
     width: 450px;
     max-width: 450px;
     border-radius: 16px;
-    box-shadow: 0 0 128px 0 rgba(0,0,0, 0.1),
-        0 32px 64px -48px rgba(0,0,0, 0.5);
+    box-shadow: 0 0 128px 0 rgba(0,0,0,0.1),
+            0 32px 64px -48px rgba(0,0,0,0.5);
 `;
 
 export const Conteudo = styled.section`
@@ -67,7 +67,7 @@ export const BtnAcessar = styled.button`
 `;
 
 export const ConteudoChat = styled.section`
-    padding: 25px 30px;
+    padding: 25px 0px;
 `;
 
 export const HeaderChat = styled.header`
@@ -91,19 +91,19 @@ export const NomeUsuario = styled.div`
 
 export const ChatBox = styled.div`
     position: relative;
-    min-height: 500px;
-    max-height: 500px;
+    min-height: 400px;
+    max-height: 400px;
     overflow-y: auto;
-    padding: 10px 10px 20px 10px;
+    padding: 10px 10 px 20px 10px;
     background: #f7f7f7;
-    box-shadow: inset 0 32px 32px -32px rgba(0 0 0 / 5%),
-                inset 0 -32px 32px -32px rgba(0 0 0 / 5%)
+    box-shadow: inset 0 32px 32px -32px rgb(0 0 0 / 5%),
+                inset 0 -32px 32px -32px rgb(0 0 0 / 5%);
+
 `;
 
 export const MsgEnviada = styled.div`
-    margin: 15px 16px 15px 0;
+    margin: 15px 14px 15px 0;
     display: flex;
-
 `;
 
 export const DetMsgEnviada = styled.div`
@@ -111,21 +111,20 @@ export const DetMsgEnviada = styled.div`
     max-width: calc(100% - 130px);
 `;
 
-export const TextoMsgEnviado = styled.p`
+export const TextoMsgEnviada = styled.p`
     background: #6fbced;
     color: #fff;
     border-radius: 18px 18px 0 18px;
     word-wrap: break-word;
     padding: 8px 16px;
-    box-shadow: 0 0 32px rgba(0 0 0 / 8%), 
-                0rem 16px 16px -16px rgba(0 0 0 / 10%)
+    box-shadow: 0 0 32px rgb(0 0 0 / 8%),
+                0rem 16px 16px -16px rgb(0 0 0 / 10%);
 `;
 
 export const MsgRecebida = styled.div`
-    margin: 15px 16px 0px 15px;
+    margin: 15px 0;
     display: flex;
     align-items: flex-end;
-
 `;
 
 export const DetMsgRecebida = styled.div`
@@ -134,21 +133,20 @@ export const DetMsgRecebida = styled.div`
     max-width: calc(100% - 130px);
 `;
 
-export const TextoMsgRecebido = styled.p`
+export const TextoMsgRecebida = styled.p`
     background: #58b666;
     color: #fff;
     border-radius: 18px 18px 18px 0;
     word-wrap: break-word;
     padding: 8px 16px;
-    box-shadow: 0 0 32px rgba(0 0 0 / 8%), 
-                0rem 16px 16px -16px rgba(0 0 0 / 10%)
+    box-shadow: 0 0 32px rgba(0 0 0 / 8%),
+                0rem 16px 16px -16px rgba(0 0 0 / 10%);
 `;
 
 export const EnviarMsg = styled.div`
     padding: 18px 15px;
     display: flex;
     justify-content: space-between;
-
 `;
 
 export const CampoMsg = styled.input`
@@ -161,13 +159,13 @@ export const CampoMsg = styled.input`
     border-radius: 5px 0 0 5px;
 `;
 
-export const BtnEnviarMsg = styled.div`
+export const BtnEnviarMsg = styled.button`
     color: #fff;
-    width: 70px;
+    width: 75px;
     border: none;
     outline: none;
+    background: #6fbced;
     font-size: 19px;
     cursor: pointer;
-    background: #6fbced;
     border-radius: 0 5px 5px 0;
 `;

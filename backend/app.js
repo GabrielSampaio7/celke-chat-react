@@ -1,6 +1,6 @@
 const express = require('express');
-const cors = require('cors');
 const socket = require('socket.io');
+const cors = require('cors');
 const app = express();
 
 app.use(express.json());
@@ -12,27 +12,29 @@ app.use((req, res, next) => {
     app.use(cors());
     next();
 });
-
-app.get('/', function(req, res){
-    res.send('Hello world')
+ 
+app.get('/', function (req, res) {
+  res.send('Bem vindo!');
 });
-
-const server = app.listen(3004, () => {
-    console.log('Server started successfully - Port 3004');
+ 
+const server = app.listen(8080, ()=> {
+    console.log("Servidor iniciado na porta 8080: http://localhost:8080");
 });
 
 io = socket(server, {cors: {origin: "*"}});
 
-io.on("Connection", (socket) => {
+io.on("connection", (socket) => {
     console.log(socket.id);
 
     socket.on("sala_conectar", (dados) => {
-        socket.join(data);
-        console.log("Sala selecionada:" + data)
-    })
+        console.log("Sala selecionada: " + dados);
+        socket.join(dados);
+    });
 
     socket.on("enviar_mensagem", (dados) => {
         console.log(dados);
         socket.to(dados.sala).emit("receber_mensagem", dados.conteudo);
-    })
-})
+    });
+});
+
+
