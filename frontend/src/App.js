@@ -80,7 +80,7 @@ function App() {
       setNome(response.data.usuario.nome);
       setUsuarioId(response.data.usuario.id);
       setLogado(true);
-      socket.emit("sala_conectar", sala);
+      socket.emit("sala_conectar", Number(sala));
       listarMensagens();
     }).catch((err) => {
       if(err.response){
@@ -100,9 +100,6 @@ function App() {
   const listarMensagens = async () => {
     await api.get("/listar-mensagens/" + sala)
     .then((response) => {
-      console.log(response);
-      console.log(response.data.mensagens);
-      //setListaMensagem([...listaMensagem, response.data.mensagens]);
       setListaMensagem(response.data.mensagens);
     }).catch((err)=>{
       if(err.response){
@@ -118,7 +115,7 @@ function App() {
 
     console.log("Mensagem: " + mensagem);
     const conteudoMensagem = {
-      sala,
+      sala: Number(sala),
       conteudo: {
         mensagem,
         usuario: {
