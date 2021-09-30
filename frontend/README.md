@@ -21,3 +21,9 @@ Socket.IO é uma biblioteca JavaScript para aplicativos da web em tempo real
 
 Transforma o CSS em componentes
 ### npm install --save styled-components
+
+Realizar chamada para API
+### npm install --save axios
+
+Criar o Scroll
+### npm install --save react-scroll-to-bottom

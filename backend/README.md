@@ -27,3 +27,16 @@ Socket.IO é uma biblioteca JavaScript para aplicativos da web em tempo real
 
 Permitir acesso a API
 ### npm install cors
+
+Instalar o banco de dados MySQL
+
+Verificar o banco de dados MySQL no pront de comando
+### mysql -h localhost -u root -p
+
+Instalar o Workbench para gerenciar o banco de dados de forma gráfica
+
+Sequelize é uma biblioteca Javascript que facilita o gerenciamento de um banco de dados SQL
+### npm install --save sequelize
+
+Instalar o drive do banco de dados
+### npm install --save mysql2
