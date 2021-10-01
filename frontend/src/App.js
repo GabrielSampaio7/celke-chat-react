@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-import { Container, Conteudo, Header, Form, Campo, Label, Input, Select, BtnAcessar, HeaderChat, ImgUsuario, NomeUsuario, ChatBox, ConteudoChat, MsgEnviada, DetMsgEnviada, TextoMsgEnviada, MsgRecebida, DetMsgRecebida, TextoMsgRecebida, EnviarMsg, CampoMsg, BtnEnviarMsg, AlertErro, AlertSucesso } from './styles/styles';
+import { Container, Conteudo, Header, Form, Campo, Label, Input, Select, BtnAcessar, HeaderChat, ImgUsuario, NomeUsuario, ChatBox, ConteudoChat, MsgEnviada, DetMsgEnviada, TextoMsgEnviada, MsgRecebida, DetMsgRecebida, TextoMsgRecebida, EnviarMsg, CampoMsg, BtnEnviarMsg, AlertErro } from './styles/styles';
 
 import api from './config/configApi';
 
@@ -46,7 +46,7 @@ function App() {
     await api.get('/listar-sala')
     .then((response) => {
       setSalas(response.data.salas);
-      console.log(response);
+      //console.log(response);
     }).catch((err) => {
       if(err.response){
         setStatus({
@@ -65,7 +65,7 @@ function App() {
   const conectarSala = async e => {
     e.preventDefault();
 
-    console.log("Acessou a sala " + sala + " com o email " + email);
+    //console.log("Acessou a sala " + sala + " com o email " + email);
 
     const headers = {
       'Content-Type': 'application/json'
@@ -73,9 +73,9 @@ function App() {
 
     await api.post('/validar-acesso', {email}, {headers})
     .then((response) => {
-      console.log(response.data.mensagem);
-      console.log(response.data.usuario.id);
-      console.log(response.data.usuario.nome);
+      //console.log(response.data.mensagem);
+      //console.log(response.data.usuario.id);
+      //console.log(response.data.usuario.nome);
 
       setNome(response.data.usuario.nome);
       setUsuarioId(response.data.usuario.id);
@@ -100,12 +100,15 @@ function App() {
   const listarMensagens = async () => {
     await api.get("/listar-mensagens/" + sala)
     .then((response) => {
+      //console.log(response);
+      //console.log(response.data.mensagens);
+      //setListaMensagem([...listaMensagem, response.data.mensagens]);
       setListaMensagem(response.data.mensagens);
     }).catch((err)=>{
       if(err.response){
-        console.log(err.response.data.mensagem);
+        //console.log(err.response.data.mensagem);
       }else{
-        console.log("Erro: Tente mais tarde!");
+        //console.log("Erro: Tente mais tarde!");
       }
     });
   }
@@ -113,7 +116,7 @@ function App() {
   const enviarMensagem = async e => {
     e.preventDefault();
 
-    console.log("Mensagem: " + mensagem);
+    //console.log("Mensagem: " + mensagem);
     const conteudoMensagem = {
       sala: Number(sala),
       conteudo: {
@@ -124,7 +127,7 @@ function App() {
         }
       }
     }
-    console.log(conteudoMensagem);
+    //console.log(conteudoMensagem);
 
     await socket.emit("enviar_mensagem", conteudoMensagem);
     setListaMensagem([...listaMensagem, conteudoMensagem.conteudo]);

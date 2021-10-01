@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View, ScrollView, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import socketIOClient from 'socket.io-client';
 import { RadioButton } from 'react-native-paper';
-import socketIOClient, { Socket } from 'socket.io-client';
+import { Text, TextInput, View, StyleSheet, Button, ScrollView, SafeAreaView } from 'react-native';
 
-import api from './config/configApi'
+import { BotaoBasico, CampoFormulario, ContainerAcesso, ConteudoCampoRadio, TituloAcesso, TituloCampo, TituloOpcaoRadio, TextoBotaoBasico, ContainerChat, FormMensagem, CampoMensagem, BotaoEnviarMsg, TextoBotaoEnviarMsg, ListarMensagem, MsgEnviada, DetMsgEnviada, MsgRecebida, DetMsgRecebida } from './styles/styles';
+
+import api from './config/configApi';
 
 let socket;
 
 function Chat() {
 
-    const ENDPOINT = "http://192.168.2.169:8080"
+    const ENDPOINT = "http://192.168.2.169:8080";
 
     const [logado, setLogado] = useState(false);
     const [usuarioId, setUsuarioId] = useState("");
@@ -17,6 +19,7 @@ function Chat() {
     const [email, setEmail] = useState("");
     const [sala, setSala] = useState("");
     const [salas, setSalas] = useState([]);
+
 
     const [mensagem, setMensagem] = useState("");
     const [listaMensagem, setListaMensagem] = useState([]);
@@ -29,13 +32,13 @@ function Chat() {
     useEffect(() => {
         socket = socketIOClient(ENDPOINT);
         listarSalas();
-    }, [])
+    }, []);
 
     useEffect(() => {
         socket.on("receber_mensagem", (dados) => {
-            setListaMensagem([...listaMensagem, dados])
+            setListaMensagem([dados, ...listaMensagem]);
         });
-    })
+    });
 
     const conectarSala = async e => {
         e.preventDefault();
@@ -44,17 +47,15 @@ function Chat() {
             'Content-Type': 'application/json'
         }
 
-        await api.post('/validar-acesso', { email }, Headers)
+        await api.post("/validar-acesso", { email }, headers)
             .then((response) => {
-
+                //console.log("Acessou a sala " + sala + " com o e-mail " + email);
                 setNome(response.data.usuario.nome);
                 setUsuarioId(response.data.usuario.id);
-
                 setLogado(true);
                 socket.emit("sala_conectar", Number(sala));
                 listarMensagens();
-            })
-            .catch((err) => {
+            }).catch((err) => {
                 if (err.response) {
                     setStatus({
                         type: "erro",
@@ -63,14 +64,14 @@ function Chat() {
                 } else {
                     setStatus({
                         type: "erro",
-                        mensagem: "Error: Tente novamente!"
+                        mensagem: "Erro: Tente mais tarde!"
                     });
                 }
-            })
+            });
     }
 
     const enviarMensagem = async () => {
-
+        //console.log("Mensagem: " + mensagem);
         const conteudoMensagem = {
             sala: Number(sala),
             conteudo: {
@@ -81,18 +82,18 @@ function Chat() {
                 }
             }
         }
-
+        //console.log(conteudoMensagem);
         await socket.emit("enviar_mensagem", conteudoMensagem);
-        setListaMensagem([...listaMensagem, conteudoMensagem.conteudo]);
+        setListaMensagem([conteudoMensagem.conteudo, ...listaMensagem]);
         setMensagem("");
     }
 
     const listarMensagens = async () => {
-        await api.get('/listar-mensagens/' + sala)
+        await api.get("/listar-mensagens-mob/" + sala)
             .then((response) => {
+                //setListaMensagem([ ...listaMensagem, response.data.mensagens]);
                 setListaMensagem(response.data.mensagens);
-            })
-            .catch((err) => {
+            }).catch((err) => {
                 if (err.response) {
                     setStatus({
                         type: "erro",
@@ -101,7 +102,7 @@ function Chat() {
                 } else {
                     setStatus({
                         type: "erro",
-                        mensagem: "Error: Tente novamente!"
+                        mensagem: "Erro: Tente mais tarde!"
                     });
                 }
             })
@@ -128,76 +129,90 @@ function Chat() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView>
-                {!logado ?
-                    <>
+        <>
+            {!logado ?
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    <ContainerAcesso>
+                        <TituloAcesso>Meu chat sobre...</TituloAcesso>
+
                         {status.type === 'erro' ? <Text>{status.mensagem}</Text> : <Text>{""}</Text>}
-                        <Text>Email: </Text>
-                        <TextInput
+
+                        <TituloCampo>E-mail</TituloCampo>
+                        <CampoFormulario
                             style={styles.input}
                             autoCorrect={false}
                             keyboardType="email-address"
                             autoCapitalize="none"
-                            placeholder="Digite seu E-mail"
+                            placeholder="Coloque o seu e-mail"
                             value={email}
                             onChangeText={(texto) => { setEmail(texto) }}
                         />
-
-                        <Text>Sala</Text>
-
+                        <TituloCampo>Sala</TituloCampo>
                         {salas.map((detSala) => {
                             return (
-                                <View key={detSala.id}>
+                                <ConteudoCampoRadio key={detSala.id}>
                                     <RadioButton
                                         value={detSala.id}
                                         status={sala === detSala.id ? 'checked' : 'unchecked'}
                                         onPress={() => setSala(detSala.id)}
                                     />
-                                    <Text>{detSala.nome}</Text>
-                                </View>
+                                    <TituloOpcaoRadio>{detSala.nome}</TituloOpcaoRadio>
+                                </ConteudoCampoRadio>
                             )
                         })}
 
-                        <Button onPress={conectarSala}
-                            title="Acessar"
-                            color="#6fbced"
-                        />
-                    </>
-                    :
-                    <>
+                        <BotaoBasico onPress={conectarSala}>
+                            <TextoBotaoBasico>Acessar</TextoBotaoBasico>
+                        </BotaoBasico>
 
-                        {listaMensagem.map((msg, key) => {
-                            return (
-                                <View key={key}>
-                                    <Text>{msg.usuario.nome}: {msg.mensagem}</Text>
-                                </View>
-                            )
-                        })}
+                    </ContainerAcesso>
+                </ScrollView>
+                :
+                <ContainerChat>
+                    <ListarMensagem
+                        inverted={true}
+                        data={listaMensagem}
+                        renderItem={({ item }) => (
+                            <>
+                                {item.usuario.id === usuarioId ?
+                                    <MsgEnviada>
+                                        <DetMsgEnviada>
+                                            {item.usuario.nome}: {item.mensagem}
+                                        </DetMsgEnviada>
+                                    </MsgEnviada>
+                                    :
+                                    <MsgRecebida>
+                                        <DetMsgRecebida>
+                                            {item.usuario.nome}: {item.mensagem}
+                                        </DetMsgRecebida>
+                                    </MsgRecebida>
+                                }
 
-                        <Text>Mensagem</Text>
-                        <TextInput
+                            </>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+
+                    />
+
+                    <FormMensagem>
+                        <CampoMensagem
                             style={styles.input}
-                            placeholder="Mensagem..."
+                            placeholder="Mensagem"
                             value={mensagem}
-                            onChangeText={(texto) => setMensagem(texto)}
-                        />
+                            onChangeText={(texto) => { setMensagem(texto) }} />
 
-                        <Button
-                            onPress={enviarMensagem}
-                            title="Enviar"
-                            color="#6fbced"
-                        />
-                    </>
-                }
-            </ScrollView>
-        </SafeAreaView>
+                        <BotaoEnviarMsg onPress={enviarMensagem}>
+                            <TextoBotaoEnviarMsg>Enviar</TextoBotaoEnviarMsg>
+                        </BotaoEnviarMsg>
+                    </FormMensagem>
+                </ContainerChat>
+            }
+        </>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 100,
         padding: 25,
         flex: 1,
         backgroundColor: '#fff'
@@ -205,7 +220,7 @@ const styles = StyleSheet.create({
     input: {
         height: 40,
         borderWidth: 1,
-        padding: 10
+        padding: 10,
     }
 })
 

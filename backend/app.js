@@ -41,6 +41,30 @@ app.get('/listar-mensagens/:sala', async (req, res) => {
     });
 });
 
+app.get('/listar-mensagens-mob/:sala', async (req, res) => {
+    const { sala } = req.params;
+    await Mensagem.findAll({
+        order: [['id', 'DESC']],
+        where: {salaId: sala},
+        include: [{
+            model: Usuario
+        },{
+            model: Sala
+        }]
+    })
+    .then((mensagens) => {
+        return res.json({
+            erro: false,
+            mensagens
+        });
+    }).catch(() => {
+        return res.status(400).json({
+            erro: true,
+            mensagem: "Erro: Nenhuma mensagem encontrada!"
+        });
+    });
+});
+
 app.post('/cadastrar-mensagem', async (req, res) => {
     await Mensagem.create(req.body)
         .then(() => {
@@ -147,9 +171,10 @@ const server = app.listen(8080, () => {
 io = socket(server, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
-
+    //console.log(socket.id);
 
     socket.on("sala_conectar", (dados) => {
+        //console.log("Sala selecionada: " + dados);
         socket.join(Number(dados));
     });
 
